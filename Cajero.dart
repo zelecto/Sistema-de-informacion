@@ -3,13 +3,36 @@ import 'dart:io';
 const List<int> billetes = [10, 20, 50, 100];
 
 void main(List<String> args) {
-  print('digite el valor a retirar: ');
-  String? captura = stdin.readLineSync();
-  print('Metodo normal :' +
-      Formateo(Despacho(int.tryParse(captura ?? '0') ?? 0)).toString());
-  print('digite el valor a retirar: ');
-  captura = stdin.readLineSync();
-  print('Metodo Comdin :' + ComodinDespacho(150).toString());
+  List<List<int>> valores = [];
+  // stdout.write('Introduce un valor: ');
+  // String? read = stdin.readLineSync();
+  // int solicitud = int.parse(read!);
+  int solicitud = 1000;
+  int monto = 0;
+  while (monto < solicitud) {
+    monto += Retirar(solicitar: solicitud - monto, array: valores);
+  }
+  print(valores);
+  print(Formateo(valores));
+}
+
+int Retirar({required int solicitar, required List<List<int>> array}) {
+  int monto = 0;
+  List<List<int>> listaValores = array;
+  for (var i = 0; i < 4; i++) {
+    if (billetes[i] + monto <= solicitar) {
+      array.length >= i + 1 ? null : array.add([]);
+      for (var j = i; j < 4; j++) {
+        if (monto + billetes[j] <= solicitar) {
+          monto += billetes[j];
+          listaValores[i].add(billetes[j]);
+        }
+      }
+    } else {
+      return monto;
+    }
+  }
+  return monto;
 }
 
 List<List<int>> Despacho(int solicitado) {
