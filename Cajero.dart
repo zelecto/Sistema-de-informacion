@@ -1,13 +1,13 @@
 import 'dart:io';
 
-const List<int> billetes = [10, 20, 50, 100];
+const List<int> billetes = [10000, 20000, 50000, 100000];
 
 void main(List<String> args) {
   List<List<int>> valores = [];
   // stdout.write('Introduce un valor: ');
   // String? read = stdin.readLineSync();
   // int solicitud = int.parse(read!);
-  int solicitud = 1000;
+  int solicitud = 50000;
   int monto = 0;
   while (monto < solicitud) {
     monto += Retirar(solicitar: solicitud - monto, array: valores);
@@ -67,16 +67,16 @@ Map<String, int> Formateo(List<List<int>> listaValores) {
   for (var i = 0; i < listaValores.length; i++) {
     for (var j = 0; j < listaValores[i].length; j++) {
       switch (listaValores[i][j]) {
-        case 10:
+        case 10000:
           numeroBilletes["10k"] = 1 + (numeroBilletes["10k"] ?? 0);
           break;
-        case 20:
+        case 20000:
           numeroBilletes["20k"] = 1 + (numeroBilletes["20k"] ?? 0);
           break;
-        case 50:
+        case 50000:
           numeroBilletes["50k"] = 1 + (numeroBilletes["50k"] ?? 0);
           break;
-        case 100:
+        case 100000:
           numeroBilletes["100k"] = 1 + (numeroBilletes["100k"] ?? 0);
           break;
 
