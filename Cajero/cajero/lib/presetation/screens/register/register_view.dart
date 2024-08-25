@@ -9,33 +9,69 @@ class RegisterView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var textStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
     final numberCard = useState<String>('');
+    final selectedColor = useState<Color>(Colors.amber);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Registrarse'),
+        title: Row(
+          children: [
+            Spacer(),
+            Text(
+              'Bancolombia',
+              style: textStyle,
+            ),
+            Image.asset(
+              'assets/images/Icono_Bancolombia.png',
+              height: ScreenSize.getHeight(context) * 0.04,
+            ),
+          ],
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            CreditCard(
-              cardNumber: numberCard.value,
-              cardExpiry: "10/25",
-              cardHolderName: "Card Holder",
-              cvv: "456",
-              bankName: "Bancolombia",
-              cardType: CardType.other,
-              showBackSide: false,
-              frontBackground: CardBackgrounds.custom(Colors.amber.value),
-              backBackground: CardBackgrounds.custom(Colors.amber.value),
-              textExpDate: 'Exp. Date',
-              textExpiry: 'MM/YY',
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Reguistrar Tarjeta de credito',
+                      style: textStyle,
+                    ),
+                  ),
+                  CreditCard(
+                    cardNumber: numberCard.value,
+                    cardExpiry: "10/25",
+                    cardHolderName: "Card Holder",
+                    cvv: "456",
+                    bankName: "Bancolombia",
+                    cardType: CardType.other,
+                    showBackSide: false,
+                    frontBackground:
+                        CardBackgrounds.custom(selectedColor.value.value),
+                    backBackground:
+                        CardBackgrounds.custom(selectedColor.value.value),
+                    textExpDate: 'Exp. Date',
+                    textExpiry: 'MM/YY',
+                  ),
+                  _CreditCardForm(numberCard, selectedColor),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Text('OR'),
+                        Expanded(child: Divider())
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            _CreditCardForm(numberCard),
           ],
         ),
       ),
@@ -44,15 +80,29 @@ class RegisterView extends HookWidget {
 }
 
 class _CreditCardForm extends HookWidget {
-  const _CreditCardForm(this.numberCard);
+  const _CreditCardForm(this.numberCard, this.selectedColor);
   final ValueNotifier<String> numberCard;
-
+  final ValueNotifier<Color> selectedColor;
   @override
   Widget build(BuildContext context) {
     final controllerNumberCard = useTextEditingController();
     final controllerHolderName = useTextEditingController();
     final controllerExpirationDate = useTextEditingController();
     final controllerCcv = useTextEditingController();
+
+    final colors = [
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.amber,
+      Colors.orange,
+      Colors.purple,
+      Colors.cyan,
+    ];
+
+    void onColorSelected(Color color) {
+      selectedColor.value = color;
+    }
 
     useEffect(() {
       void listener() {
@@ -81,6 +131,36 @@ class _CreditCardForm extends HookWidget {
 
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: SizedBox(
+            height: 50,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: colors.map((colorItem) {
+                final isSelected = colorItem == selectedColor.value;
+                return GestureDetector(
+                  onTap: () => onColorSelected(colorItem),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    width: ScreenSize.getWidth(context) * 0.08,
+                    decoration: BoxDecoration(
+                      color: colorItem,
+                      shape: BoxShape.circle,
+                      border: isSelected
+                          ? Border.all(
+                              color: Colors.black54,
+                              width: 2,
+                            )
+                          : null,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
         TextFieldFrom(
           controller: controllerNumberCard,
           hintText: '0000 0000 0000 0000',
@@ -100,7 +180,7 @@ class _CreditCardForm extends HookWidget {
               child: TextFieldFrom(
                 controller: controllerExpirationDate,
                 maxLength: 4,
-                labelText: 'vencimiento',
+                labelText: 'Vencimiento',
                 hintText: '00/00',
               ),
             ),
@@ -116,7 +196,7 @@ class _CreditCardForm extends HookWidget {
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -141,7 +221,7 @@ class TextFieldFrom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: TextField(
         keyboardType: type,
         controller: controller,
