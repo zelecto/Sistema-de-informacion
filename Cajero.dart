@@ -87,29 +87,3 @@ Map<String, int> Formateo(List<List<int>> listaValores) {
 
   return numeroBilletes;
 }
-
-Map<String, int> ComodinDespacho(int solicitado) {
-  int monto = 0;
-  Map<String, int> resultados = {
-    "10k": 0,
-    "20k": 0,
-    "50k": 0,
-    "100k": 0,
-  };
-  while (monto < solicitado) {
-    for (var i = 3; i >= 0; i--) {
-      if (monto + billetes[i] <= solicitado) {
-        var numeroBilletes = descomponer(solicitado - monto, billetes[i]);
-        resultados[billetes[i].toString() + 'k'] =
-            numeroBilletes + (resultados[billetes[i].toString() + 'k'] ?? 0);
-        monto += numeroBilletes * billetes[i];
-      }
-    }
-  }
-
-  return resultados;
-}
-
-int descomponer(int valor, int valorDeBillete) {
-  return valor ~/ valorDeBillete;
-}
