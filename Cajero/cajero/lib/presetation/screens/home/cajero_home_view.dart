@@ -1,5 +1,6 @@
 import 'package:cajero/config/tools/screen_size.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CajeroHomeView extends StatelessWidget {
   const CajeroHomeView({super.key});
@@ -10,6 +11,15 @@ class CajeroHomeView extends StatelessWidget {
     return Scaffold(
       body: Scaffold(
         appBar: AppBar(
+          actions: [
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: FilledButton(
+                    onPressed: () {
+                      context.push('/register');
+                    },
+                    child: const Text("Reguistrarse")))
+          ],
           title: Row(
             children: [
               Image.asset(
@@ -23,8 +33,6 @@ class CajeroHomeView extends StatelessWidget {
                 "Bancolombia",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const Spacer(),
-              FilledButton(onPressed: () {}, child: const Text("Reguistrarse"))
             ],
           ),
         ),
