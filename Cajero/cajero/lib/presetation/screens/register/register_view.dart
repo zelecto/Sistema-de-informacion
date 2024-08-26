@@ -11,13 +11,6 @@ class RegisterView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var textStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
-    //varibles de la tarjeta
-    final numberCard = useState<String>('');
-    final holderName = useState<String>('');
-    final expirationDate = useState<String>('');
-    final securityCode = useState<String>('');
-    final showBackSide = useState(false);
-    final selectedColor = useState<Color>(Colors.amber);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
