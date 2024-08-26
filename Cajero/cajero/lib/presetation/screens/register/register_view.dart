@@ -87,6 +87,13 @@ class RegisterView extends HookWidget {
                       ],
                     ),
                   ),
+                  Text(
+                    'Reguistrar Cuenta Nequi',
+                    style: textStyle,
+                  ),
+                  Image.network(
+                      'https://i.pinimg.com/564x/c9/9d/14/c99d1437635da2d96561a8e37f0d4d4e.jpg'),
+                  const _AcountNequiFrom()
                 ],
               ),
             ),
@@ -217,6 +224,7 @@ class _CreditCardForm extends HookWidget {
                 maxLength: 5, // Para formato 'MM/YY'
                 labelText: 'Vencimiento',
                 hintText: '00/00',
+                type: TextInputType.number,
               ),
             ),
             const Spacer(),
@@ -232,6 +240,45 @@ class _CreditCardForm extends HookWidget {
             ),
           ],
         ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: SizedBox(
+            width: ScreenSize.getWidth(context) * 0.4,
+            child: FilledButton(
+              onPressed: () {},
+              style: FilledButton.styleFrom(backgroundColor: Colors.green),
+              child: const Text('Guardar'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AcountNequiFrom extends HookWidget {
+  const _AcountNequiFrom();
+
+  @override
+  Widget build(BuildContext context) {
+    final controllerName = useTextEditingController();
+    return Column(
+      children: [
+        TextFieldFrom(
+            controller: controllerName,
+            labelText: 'Nombre',
+            hintText: 'Carlos'),
+        TextFieldFrom(
+            controller: controllerName,
+            labelText: 'Telefono',
+            hintText: '0000000000'),
+        TextFieldFrom(
+            controller: controllerName,
+            labelText: 'cedula',
+            hintText: 'Carlos'),
+        SizedBox(
+          height: ScreenSize.getHeight(context) * 0.15,
+        )
       ],
     );
   }
