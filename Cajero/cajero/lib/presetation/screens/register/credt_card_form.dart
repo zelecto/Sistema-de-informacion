@@ -1,3 +1,7 @@
+import 'package:awesome_card/credit_card.dart';
+import 'package:awesome_card/extra/card_type.dart';
+import 'package:awesome_card/style/card_background.dart';
+import 'package:cajero/config/tools/color_util.dart';
 import 'package:cajero/presetation/screens/register/widget/text_field_from.dart';
 import 'package:cajero/presetation/screens/register/widget/update_colors.dart';
 import 'package:flutter/material.dart';
@@ -7,23 +11,29 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class CreditCardForm extends HookWidget {
   const CreditCardForm({
     super.key,
-    required this.numberCard,
-    required this.selectedColor,
-    required this.holderName,
-    required this.expirationDate,
-    required this.securityCode,
-    required this.showBackSide,
   });
-
-  final ValueNotifier<String> numberCard;
-  final ValueNotifier<String> holderName;
-  final ValueNotifier<String> expirationDate;
-  final ValueNotifier<String> securityCode;
-  final ValueNotifier<Color> selectedColor;
-  final ValueNotifier<bool> showBackSide;
 
   @override
   Widget build(BuildContext context) {
+    // Textos y mensajes de validación
+    const String cardNumberHint = '0000 0000 0000 0000';
+    const String holderNameHint = 'Nombre';
+    const String expirationHint = 'MM/AA';
+    const String ccvHint = '000';
+    const String saveButtonLabel = 'Guardar';
+    const String cardBankName = "Bancolombia";
+    const String textExpDate = 'Exp. Date';
+    const String textExpiry = 'MM/YY';
+
+    // Variables de UI Card Credit
+    final numberCard = useState<String>('');
+    final holderName = useState<String>('');
+    final expirationDate = useState<String>('');
+    final securityCode = useState<String>('');
+    final showBackSide = useState(false);
+    final selectedColor = useState<Color>(Colors.amber);
+
+    // Controladores de inputs
     final controllerNumberCard = useTextEditingController();
     final controllerHolderName = useTextEditingController();
     final controllerExpirationDate = useTextEditingController();
@@ -32,10 +42,12 @@ class CreditCardForm extends HookWidget {
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
+    // FocusNode para el CCV
+    final focusNodeCcv = useFocusNode();
+
     // Función para formatear el número de tarjeta
     void formatCardNumber(String value) {
       final rawText = value.replaceAll(RegExp(r'\s+'), '');
-      // Limita a 16 dígitos (sin espacios)
       final limitedText =
           rawText.length > 16 ? rawText.substring(0, 16) : rawText;
       final formattedText = limitedText
@@ -84,126 +96,160 @@ class CreditCardForm extends HookWidget {
       controllerExpirationDate.addListener(listener);
       controllerCcv.addListener(listener);
 
+      // Listener para el FocusNode del CCV
+      focusNodeCcv.addListener(() {
+        showBackSide.value = focusNodeCcv.hasFocus;
+      });
+
       return () {
         controllerNumberCard.removeListener(listener);
         controllerHolderName.removeListener(listener);
         controllerExpirationDate.removeListener(listener);
         controllerCcv.removeListener(listener);
+        focusNodeCcv.removeListener(() {
+          showBackSide.value = focusNodeCcv.hasFocus;
+        });
       };
     }, [
       controllerNumberCard,
       controllerHolderName,
       controllerExpirationDate,
       controllerCcv,
+      focusNodeCcv,
     ]);
 
-    return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          UpdateColors(selectedColor: selectedColor),
-          TextFieldFrom(
-            controller: controllerNumberCard,
-            hintText: '0000 0000 0000 0000',
-            labelText: 'Número de la tarjeta',
-            maxLength: 19,
-            type: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo es obligatorio';
-              }
-              if (value.replaceAll(RegExp(r'\s+'), '').length != 16) {
-                return 'El número de tarjeta debe tener 16 dígitos';
-              }
-              return null;
-            },
-          ),
-          TextFieldFrom(
-            controller: controllerHolderName,
-            labelText: 'Titular de la tarjeta',
-            maxLength: 20,
-            hintText: 'Nombre',
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))
-            ],
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo es obligatorio';
-              }
-              if (value.length < 3) {
-                return 'El nombre debe tener al menos 3 caracteres';
-              }
-              return null;
-            },
-          ),
-          Row(
+    return Column(
+      children: [
+        CreditCard(
+          cardNumber: numberCard.value,
+          cardExpiry: expirationDate.value,
+          cardHolderName: holderName.value,
+          cvv: securityCode.value,
+          bankName: cardBankName,
+          cardType: CardType.masterCard,
+          showBackSide: showBackSide.value,
+          frontBackground: CardBackgrounds.custom(selectedColor.value.value),
+          backBackground: CardBackgrounds.custom(selectedColor.value.value),
+          frontTextColor: ColorUtil.isColorLight(selectedColor.value)
+              ? Colors.black
+              : Colors.white,
+          textExpDate: textExpDate,
+          textExpiry: textExpiry,
+        ),
+        Form(
+          key: formKey,
+          child: Column(
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.4,
-                child: TextFieldFrom(
-                  controller: controllerExpirationDate,
-                  maxLength: 5,
-                  labelText: 'Vencimiento',
-                  hintText: 'MM/AA',
-                  type: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4)
-                  ], // Limita a 4 caracteres],
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Este campo es obligatorio';
-                    }
-                    if (value.length > 5) {
-                      return 'El CCV no puede tener más de 4 dígitos';
-                    }
-                    return null;
-                  },
-                ),
+              UpdateColors(selectedColor: selectedColor),
+              TextFieldFrom(
+                controller: controllerNumberCard,
+                hintText: cardNumberHint,
+                labelText: 'Número de la tarjeta',
+                maxLength: 19,
+                type: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Este campo es obligatorio';
+                  }
+                  if (value.replaceAll(RegExp(r'\s+'), '').length != 16) {
+                    return 'El número de tarjeta debe tener 16 dígitos';
+                  }
+                  return null;
+                },
               ),
-              const Spacer(),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.4,
-                child: TextFieldFrom(
-                  controller: controllerCcv,
-                  maxLength: 4,
-                  labelText: 'CCV',
-                  hintText: '000',
-                  type: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Este campo es obligatorio';
-                    }
-                    if (value.length < 3) {
-                      return 'El CCV debe tener al menos 3 dígitos';
-                    }
-                    return null;
-                  },
+              TextFieldFrom(
+                controller: controllerHolderName,
+                labelText: 'Titular de la tarjeta',
+                maxLength: 20,
+                hintText: holderNameHint,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Este campo es obligatorio';
+                  }
+                  if (value.length < 3) {
+                    return 'El nombre debe tener al menos 3 caracteres';
+                  }
+                  return null;
+                },
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: TextFieldFrom(
+                      controller: controllerExpirationDate,
+                      maxLength: 5,
+                      labelText: 'Vencimiento',
+                      hintText: expirationHint,
+                      type: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Este campo es obligatorio';
+                        }
+                        if (value.length > 5) {
+                          return 'La fecha de vencimiento no puede tener más de 5 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: TextFieldFrom(
+                      controller: controllerCcv,
+                      maxLength: 4,
+                      labelText: 'CCV',
+                      hintText: ccvHint,
+                      type: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Este campo es obligatorio';
+                        }
+                        if (value.length < 3) {
+                          return 'El CCV debe tener al menos 3 dígitos';
+                        }
+                        return null;
+                      },
+                      focusNode: focusNodeCcv, // Asignar el FocusNode aquí
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: FilledButton(
+                    onPressed: isFormValid.value
+                        ? () {
+                            if (formKey.currentState?.validate() ?? false) {
+                              controllerNumberCard.clear();
+                              controllerHolderName.clear();
+                              controllerExpirationDate.clear();
+                              controllerCcv.clear();
+                            }
+                          }
+                        : null,
+                    style:
+                        FilledButton.styleFrom(backgroundColor: Colors.green),
+                    child: Text(saveButtonLabel),
+                  ),
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: FilledButton(
-                onPressed: isFormValid.value
-                    ? () {
-                        if (formKey.currentState?.validate() ?? false) {
-                          print('Formulario guardado');
-                        }
-                      }
-                    : null,
-                style: FilledButton.styleFrom(backgroundColor: Colors.green),
-                child: const Text('Guardar'),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

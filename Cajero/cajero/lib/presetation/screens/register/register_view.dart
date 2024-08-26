@@ -1,9 +1,7 @@
-import 'package:cajero/config/tools/color_util.dart';
 import 'package:cajero/config/tools/screen_size.dart';
 import 'package:cajero/presetation/screens/register/acount_nequi_from.dart';
 import 'package:cajero/presetation/screens/register/credt_card_form.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_card/awesome_card.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class RegisterView extends HookWidget {
@@ -51,32 +49,7 @@ class RegisterView extends HookWidget {
                       style: textStyle,
                     ),
                   ),
-                  CreditCard(
-                    cardNumber: numberCard.value,
-                    cardExpiry: expirationDate.value,
-                    cardHolderName: holderName.value,
-                    cvv: securityCode.value,
-                    bankName: "Bancolombia",
-                    cardType: CardType.masterCard,
-                    showBackSide: showBackSide.value,
-                    frontBackground:
-                        CardBackgrounds.custom(selectedColor.value.value),
-                    backBackground:
-                        CardBackgrounds.custom(selectedColor.value.value),
-                    frontTextColor: ColorUtil.isColorLight(selectedColor.value)
-                        ? Colors.black
-                        : Colors.white,
-                    textExpDate: 'Exp. Date',
-                    textExpiry: 'MM/YY',
-                  ),
-                  CreditCardForm(
-                    numberCard: numberCard,
-                    selectedColor: selectedColor,
-                    securityCode: securityCode,
-                    expirationDate: expirationDate,
-                    holderName: holderName,
-                    showBackSide: showBackSide,
-                  ),
+                  CreditCardForm(),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Row(
