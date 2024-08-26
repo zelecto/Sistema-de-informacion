@@ -12,6 +12,7 @@ class TextFieldFrom extends StatelessWidget {
     this.type,
     this.inputFormatters = const [],
     this.validator,
+    this.focusNode,
   });
 
   final TextEditingController controller;
@@ -22,6 +23,7 @@ class TextFieldFrom extends StatelessWidget {
   final TextInputType? type;
   final List<TextInputFormatter> inputFormatters;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +35,14 @@ class TextFieldFrom extends StatelessWidget {
         maxLength: maxLength,
         inputFormatters: inputFormatters,
         validator: validator,
+        focusNode: focusNode,
         decoration: InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            labelText: labelText,
-            hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.grey),
-            counterText: ''),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+          labelText: labelText,
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.grey),
+          counterText: '',
+        ),
       ),
     );
   }
