@@ -2,6 +2,8 @@ import 'package:awesome_card/credit_card.dart';
 import 'package:awesome_card/extra/card_type.dart';
 import 'package:awesome_card/style/card_background.dart';
 import 'package:cajero/config/tools/color_util.dart';
+import 'package:cajero/domain/entity/credit_card.dart';
+import 'package:cajero/domain/infrastructure/credit_card_data.dart';
 import 'package:cajero/presetation/screens/register/widget/text_field_from.dart';
 import 'package:cajero/presetation/screens/register/widget/update_colors.dart';
 import 'package:flutter/material.dart';
@@ -233,6 +235,15 @@ class CreditCardForm extends HookWidget {
                     onPressed: isFormValid.value
                         ? () {
                             if (formKey.currentState?.validate() ?? false) {
+                              var credit_card = CreditCardEntity(
+                                  cardNumber: controllerNumberCard.text,
+                                  cardExpiry: controllerHolderName.text,
+                                  cardHolderName: controllerExpirationDate.text,
+                                  cvv: controllerCcv.text,
+                                  color: selectedColor.value);
+
+                              addCreditCard(credit_card);
+
                               controllerNumberCard.clear();
                               controllerHolderName.clear();
                               controllerExpirationDate.clear();
@@ -242,7 +253,7 @@ class CreditCardForm extends HookWidget {
                         : null,
                     style:
                         FilledButton.styleFrom(backgroundColor: Colors.green),
-                    child: Text(saveButtonLabel),
+                    child: const Text(saveButtonLabel),
                   ),
                 ),
               ),
