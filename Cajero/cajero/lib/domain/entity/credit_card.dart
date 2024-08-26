@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-class CreditCard {
+class CreditCardEntity {
   final String cardNumber;
   final String cardExpiry;
   final String cardHolderName;
@@ -9,7 +9,7 @@ class CreditCard {
   final String cardType;
   final Color color;
 
-  CreditCard({
+  CreditCardEntity({
     required this.cardNumber,
     required this.cardExpiry,
     required this.cardHolderName,
