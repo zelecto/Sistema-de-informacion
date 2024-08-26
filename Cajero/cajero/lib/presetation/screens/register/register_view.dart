@@ -1,4 +1,7 @@
+import 'package:cajero/config/tools/color_util.dart';
 import 'package:cajero/config/tools/screen_size.dart';
+import 'package:cajero/presetation/screens/register/widget/text_field_from.dart';
+import 'package:cajero/presetation/screens/register/widget/update_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_card/awesome_card.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,14 +13,19 @@ class RegisterView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var textStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
+    //varibles de la tarjeta
     final numberCard = useState<String>('');
+    final holderName = useState<String>('');
+    final expirationDate = useState<String>('');
+    final securityCode = useState<String>('');
+    final showBackSide = useState(false);
     final selectedColor = useState<Color>(Colors.amber);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Row(
           children: [
-            Spacer(),
+            const Spacer(),
             Text(
               'Bancolombia',
               style: textStyle,
@@ -45,20 +53,30 @@ class RegisterView extends HookWidget {
                   ),
                   CreditCard(
                     cardNumber: numberCard.value,
-                    cardExpiry: "10/25",
-                    cardHolderName: "Card Holder",
-                    cvv: "456",
+                    cardExpiry: expirationDate.value,
+                    cardHolderName: holderName.value,
+                    cvv: securityCode.value,
                     bankName: "Bancolombia",
-                    cardType: CardType.other,
-                    showBackSide: false,
+                    cardType: CardType.masterCard,
+                    showBackSide: showBackSide.value,
                     frontBackground:
                         CardBackgrounds.custom(selectedColor.value.value),
                     backBackground:
                         CardBackgrounds.custom(selectedColor.value.value),
+                    frontTextColor: ColorUtil.isColorLight(selectedColor.value)
+                        ? Colors.black
+                        : Colors.white,
                     textExpDate: 'Exp. Date',
                     textExpiry: 'MM/YY',
                   ),
-                  _CreditCardForm(numberCard, selectedColor),
+                  _CreditCardForm(
+                    numberCard: numberCard,
+                    selectedColor: selectedColor,
+                    securityCode: securityCode,
+                    expirationDate: expirationDate,
+                    holderName: holderName,
+                    showBackSide: showBackSide,
+                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Row(
@@ -80,9 +98,21 @@ class RegisterView extends HookWidget {
 }
 
 class _CreditCardForm extends HookWidget {
-  const _CreditCardForm(this.numberCard, this.selectedColor);
+  const _CreditCardForm(
+      {required this.numberCard,
+      required this.selectedColor,
+      required this.holderName,
+      required this.expirationDate,
+      required this.securityCode,
+      required this.showBackSide});
+
   final ValueNotifier<String> numberCard;
+  final ValueNotifier<String> holderName;
+  final ValueNotifier<String> expirationDate;
+  final ValueNotifier<String> securityCode;
   final ValueNotifier<Color> selectedColor;
+  final ValueNotifier<bool> showBackSide;
+
   @override
   Widget build(BuildContext context) {
     final controllerNumberCard = useTextEditingController();
@@ -90,22 +120,10 @@ class _CreditCardForm extends HookWidget {
     final controllerExpirationDate = useTextEditingController();
     final controllerCcv = useTextEditingController();
 
-    final colors = [
-      Colors.red,
-      Colors.green,
-      Colors.blue,
-      Colors.amber,
-      Colors.orange,
-      Colors.purple,
-      Colors.cyan,
-    ];
-
-    void onColorSelected(Color color) {
-      selectedColor.value = color;
-    }
-
+    // Listener para el número de la tarjeta
     useEffect(() {
       void listener() {
+        showBackSide.value ? showBackSide.value = false : null;
         final rawText =
             controllerNumberCard.text.replaceAll(RegExp(r'\s+'), '');
         final formattedText = rawText
@@ -121,6 +139,7 @@ class _CreditCardForm extends HookWidget {
       return () => controllerNumberCard.removeListener(listener);
     }, [controllerNumberCard]);
 
+    // Sincronizar el controlador con el ValueNotifier
     useEffect(() {
       controllerNumberCard.text = numberCard.value;
       controllerNumberCard.selection = TextSelection.fromPosition(
@@ -129,38 +148,53 @@ class _CreditCardForm extends HookWidget {
       return null;
     }, [numberCard.value]);
 
+    // Listener para el nombre del titular
+    useEffect(() {
+      void listener() {
+        showBackSide.value ? showBackSide.value = false : null;
+        if (holderName.value != controllerHolderName.text) {
+          holderName.value = controllerHolderName.text;
+        }
+      }
+
+      controllerHolderName.addListener(listener);
+      return () => controllerHolderName.removeListener(listener);
+    }, [controllerHolderName]);
+
+    // Listener para la fecha de vencimiento
+    useEffect(() {
+      void listener() {
+        showBackSide.value ? showBackSide.value = false : null;
+        if (expirationDate.value != controllerExpirationDate.text) {
+          expirationDate.value = controllerExpirationDate.text;
+        }
+      }
+
+      controllerExpirationDate.addListener(listener);
+      return () => controllerExpirationDate.removeListener(listener);
+    }, [controllerExpirationDate]);
+
+    // Listener para el código de seguridad
+    useEffect(() {
+      void listener() {
+        showBackSide.value = true;
+        if (securityCode.value != controllerCcv.text) {
+          securityCode.value = controllerCcv.text;
+          controllerCcv.text.length == 4
+              ? Future.delayed(const Duration(seconds: 2), () {
+                  showBackSide.value = false;
+                })
+              : null;
+        }
+      }
+
+      controllerCcv.addListener(listener);
+      return () => controllerCcv.removeListener(listener);
+    }, [controllerCcv]);
+
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: colors.map((colorItem) {
-                final isSelected = colorItem == selectedColor.value;
-                return GestureDetector(
-                  onTap: () => onColorSelected(colorItem),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    width: ScreenSize.getWidth(context) * 0.08,
-                    decoration: BoxDecoration(
-                      color: colorItem,
-                      shape: BoxShape.circle,
-                      border: isSelected
-                          ? Border.all(
-                              color: Colors.black54,
-                              width: 2,
-                            )
-                          : null,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
+        UpdateColors(selectedColor: selectedColor),
         TextFieldFrom(
           controller: controllerNumberCard,
           hintText: '0000 0000 0000 0000',
@@ -169,17 +203,18 @@ class _CreditCardForm extends HookWidget {
           type: TextInputType.number,
         ),
         TextFieldFrom(
-            controller: controllerHolderName,
-            labelText: 'Titular de la tarjeta',
-            maxLength: 50,
-            hintText: 'Nombre'),
+          controller: controllerHolderName,
+          labelText: 'Titular de la tarjeta',
+          maxLength: 20,
+          hintText: 'Nombre',
+        ),
         Row(
           children: [
             SizedBox(
               width: ScreenSize.getWidth(context) * 0.4,
               child: TextFieldFrom(
                 controller: controllerExpirationDate,
-                maxLength: 4,
+                maxLength: 5, // Para formato 'MM/YY'
                 labelText: 'Vencimiento',
                 hintText: '00/00',
               ),
@@ -191,48 +226,13 @@ class _CreditCardForm extends HookWidget {
                 controller: controllerCcv,
                 maxLength: 4,
                 labelText: 'CCV',
-                hintText: '0000',
+                hintText: '000',
                 type: TextInputType.number,
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class TextFieldFrom extends StatelessWidget {
-  const TextFieldFrom({
-    super.key,
-    required this.controller,
-    required this.labelText,
-    required this.hintText,
-    this.maxLength,
-    this.type,
-  });
-
-  final TextEditingController controller;
-  final String labelText;
-  final String hintText;
-  final int? maxLength;
-  final TextInputType? type;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: TextField(
-        keyboardType: type,
-        controller: controller,
-        maxLength: maxLength,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          labelText: labelText,
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-        ),
-      ),
     );
   }
 }
