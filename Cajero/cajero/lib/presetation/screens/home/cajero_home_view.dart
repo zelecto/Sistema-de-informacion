@@ -94,7 +94,9 @@ class CajeroHomeView extends StatelessWidget {
                     width: ScreenSize.getWidth(context) * 0.4,
                     height: ScreenSize.getHeight(context) * 0.05,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.push('/retirar_credit_card');
+                      },
                       style: TextButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                               borderRadius:
