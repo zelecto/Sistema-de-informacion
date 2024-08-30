@@ -1,10 +1,5 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cajero/domain/entity/credit_card.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'credit_cart_provaider.g.dart';
-
-@Riverpod(keepAlive: true)
-CreditCardEntity creditCartProvaider(
-    CreditCartProvaiderRef ref, CreditCardEntity creditCardEntity) {
-  return creditCardEntity;
-}
+// Proveedor global de CreditCardEntity
+final creditCardProvider = StateProvider<CreditCardEntity?>((ref) => null);
