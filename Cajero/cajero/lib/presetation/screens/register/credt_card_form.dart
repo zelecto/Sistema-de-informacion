@@ -237,8 +237,8 @@ class CreditCardForm extends HookWidget {
                             if (formKey.currentState?.validate() ?? false) {
                               var credit_card = CreditCardEntity(
                                   cardNumber: controllerNumberCard.text,
-                                  cardExpiry: controllerHolderName.text,
-                                  cardHolderName: controllerExpirationDate.text,
+                                  cardExpiry: controllerExpirationDate.text,
+                                  cardHolderName: controllerHolderName.text,
                                   cvv: controllerCcv.text,
                                   color: selectedColor.value);
 

@@ -7,6 +7,7 @@ import 'package:cajero/domain/entity/credit_card.dart';
 import 'package:cajero/domain/infrastructure/credit_card_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 class RetirarCreditCard extends HookWidget {
   const RetirarCreditCard({super.key});
@@ -170,10 +171,12 @@ class RetirarCreditCard extends HookWidget {
             ),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               child: FilledButton(
-                onPressed: () {},
-                child: Text("Continuar"),
+                onPressed: () {
+                  context.go('/monto_selecionar');
+                },
+                child: const Text("Continuar"),
               ),
             )
           ],

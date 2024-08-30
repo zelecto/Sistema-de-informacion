@@ -42,7 +42,7 @@ class RegisterView extends HookWidget {
                       style: textStyle,
                     ),
                   ),
-                  CreditCardForm(),
+                  const CreditCardForm(),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Row(
