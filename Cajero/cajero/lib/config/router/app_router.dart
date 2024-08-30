@@ -5,7 +5,7 @@ import 'package:cajero/presetation/screens/retirar/credit_card/retirar_credit_ca
 import 'package:cajero/presetation/screens/retirar/widget/monto_selecionar_view.dart';
 import 'package:go_router/go_router.dart';
 
-final appRouter = GoRouter(initialLocation: '/monto_selecionar', routes: [
+final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/',
     name: CajeroHomeView.name,
