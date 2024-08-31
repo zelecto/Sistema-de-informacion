@@ -82,25 +82,6 @@ class AcountNequiFrom extends HookWidget {
               return null;
             },
           ),
-          TextFieldFrom(
-            controller: controllerCedula,
-            labelText: 'Cédula',
-            hintText: '00000000',
-            maxLength: 12,
-            type: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo es obligatorio';
-              }
-              if (value.length < 8) {
-                return 'La cédula debe tener al menos 8 dígitos';
-              }
-              return null;
-            },
-          ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: SizedBox(
