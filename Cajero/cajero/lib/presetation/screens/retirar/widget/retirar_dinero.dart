@@ -23,13 +23,17 @@ class ReciboView extends ConsumerWidget {
       width: ScreenSize.getWidth(context),
       child: Column(
         children: [
+          SizedBox(
+            height: ScreenSize.getHeight(context) * 0.05,
+          ),
           _CuentaInfoCard(
               acountNumber: creditCardEntity != null
                   ? creditCardEntity.cardNumber
                   : acuntNequi!.tlf,
               montoRetirar: retiro!.montoRetirar),
           FilledButton(
-              onPressed: () => context.go('/'), child: Text('Regresar al menu'))
+              onPressed: () => context.go('/'),
+              child: const Text('Regresar al menu'))
         ],
       ),
     ));

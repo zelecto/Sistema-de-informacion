@@ -3,7 +3,6 @@ import 'package:cajero/domain/entity/credit_card.dart';
 import 'package:cajero/domain/entity/retiro.dart';
 import 'package:cajero/presetation/provider/Retiro/retiro_provider.dart';
 import 'package:cajero/presetation/provider/credit_cart/credit_cart_provaider.dart';
-import 'package:cajero/presetation/screens/retirar/credit_card/retirar_credit_card_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

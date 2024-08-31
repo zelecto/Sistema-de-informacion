@@ -208,7 +208,7 @@ class CreditCardForm extends HookWidget {
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: TextFieldFrom(
                       controller: controllerCcv,
-                      maxLength: 4,
+                      maxLength: 3,
                       labelText: 'CCV',
                       hintText: ccvHint,
                       type: TextInputType.number,
