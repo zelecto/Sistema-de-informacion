@@ -13,7 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class RetirarCreditCard extends HookConsumerWidget {
   const RetirarCreditCard({super.key});
-  static const String name = 'retirar-credit-card';
+  static const String name = 'retirar-credit-card-password';
   final textStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
 
   Future<List<CreditCardEntity>> fetchCreditCards() async {

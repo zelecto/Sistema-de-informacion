@@ -7,6 +7,7 @@ import 'package:cajero/presetation/screens/retirar/credit_card/retirar_credit_ca
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -98,13 +99,13 @@ class MontoSelecionarView extends HookConsumerWidget {
                                     ),
                                     creditCard: creditCardEntity,
                                   );
+                                  context.go('/codigo-CCV');
                                 } else {
                                   retiro = Retiro(montoRetirar: 1000);
                                 }
                                 ref.watch(retiroProvider.notifier).state =
                                     retiro;
                                 Navigator.pop(context);
-                                showRetirarCreditCardPasswordDialog(context);
                               },
                             ),
                           ),
@@ -134,7 +135,7 @@ class _AmountField extends HookWidget {
   final TextEditingController controller;
   final String hintText;
   final String labelText;
-  final VoidCallback onSubmit; // Callback para manejar el envío del formulario
+  final VoidCallback onSubmit;
 
   const _AmountField({
     required this.controller,
@@ -147,13 +148,10 @@ class _AmountField extends HookWidget {
   Widget build(BuildContext context) {
     final formatter = NumberFormat('#,###', 'es_ES');
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final isValid =
-        useState(false); // Estado para manejar la validez del formulario
+    final isValid = useState(false);
 
-    // Lista de valores válidos
     const validValues = [10000, 20000, 50000, 100000];
 
-    // Función para formatear el monto
     void formatAmount(String value) {
       final rawText = value.replaceAll(RegExp(r'\D'), '');
       final intValue = int.tryParse(rawText) ?? 0;
@@ -170,7 +168,6 @@ class _AmountField extends HookWidget {
       }
     }
 
-    // Validar el formulario y actualizar el estado
     void validateForm() {
       final formIsValid = formKey.currentState?.validate() ?? false;
       isValid.value = formIsValid;

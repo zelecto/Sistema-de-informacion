@@ -1,29 +1,109 @@
+import 'package:cajero/config/tools/screen_size.dart';
+import 'package:cajero/domain/entity/acunt_nequi.dart';
+import 'package:cajero/domain/entity/credit_card.dart';
+import 'package:cajero/presetation/provider/Retiro/retiro_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const List<int> billetes = [10000, 20000, 50000, 100000];
 
-class RetirarDinero extends StatelessWidget {
-  const RetirarDinero({super.key});
-  static const String name = '';
+class ReciboView extends ConsumerWidget {
+  const ReciboView({super.key});
+  static const String name = 'retirar-dinero';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var retiro = ref.read(retiroProvider);
+    CreditCardEntity? creditCardEntity = retiro?.creditCard;
+    AcuntNequi? acuntNequi = retiro?.acuntNequi;
+
+    return Scaffold(
+        body: SizedBox(
+      width: ScreenSize.getWidth(context),
+      child: Column(
+        children: [
+          _CuentaInfoCard(
+              acountNumber: creditCardEntity != null
+                  ? creditCardEntity.cardNumber
+                  : acuntNequi!.tlf,
+              montoRetirar: retiro!.montoRetirar),
+          FilledButton(
+              onPressed: () => context.go('/'), child: Text('Regresar al menu'))
+        ],
+      ),
+    ));
+  }
+}
+
+class _CuentaInfoCard extends StatelessWidget {
+  final String acountNumber;
+  final int montoRetirar;
+
+  const _CuentaInfoCard({
+    required this.acountNumber,
+    required this.montoRetirar,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    List<List<int>> valores = [];
+    int solicitud = montoRetirar;
+    int monto = 0;
+
+    while (monto < solicitud) {
+      monto += retirar(solicitar: solicitud - monto, array: valores);
+    }
+
+    var billetesFormateado = formateo(valores);
+    const textStyle = TextStyle(fontWeight: FontWeight.w400, fontSize: 18);
+
+    return SizedBox(
+      width: double.infinity,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          width: ScreenSize.getWidth(context),
+          height: ScreenSize.getHeight(context) * 0.5,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    'Registro de operación \n Cajero automático',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  Text(
+                    'Número de cuenta: $acountNumber',
+                    style: textStyle,
+                  ),
+                  Text(
+                    'Monto retirado: $montoRetirar',
+                    style: textStyle,
+                  ),
+                  Wrap(
+                    spacing: 8.0,
+                    alignment: WrapAlignment.center,
+                    children: billetesFormateado.entries.map((entry) {
+                      return Text(
+                        '${entry.key} : ${entry.value}',
+                        style: textStyle,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
-void main(List<String> args) {
-  List<List<int>> valores = [];
-  int solicitud = 50000;
-  int monto = 0;
-  while (monto < solicitud) {
-    monto += Retirar(solicitar: solicitud - monto, array: valores);
-  }
-  print(valores);
-  print(Formateo(valores));
-}
-
-int Retirar({required int solicitar, required List<List<int>> array}) {
+int retirar({required int solicitar, required List<List<int>> array}) {
   int monto = 0;
   List<List<int>> listaValores = array;
   for (var i = 0; i < 4; i++) {
@@ -42,7 +122,7 @@ int Retirar({required int solicitar, required List<List<int>> array}) {
   return monto;
 }
 
-List<List<int>> Despacho(int solicitado) {
+List<List<int>> despacho(int solicitado) {
   int monto = 0;
   int filas = 0;
   List<List<int>> resultado = [];
@@ -64,7 +144,7 @@ List<List<int>> Despacho(int solicitado) {
   return resultado;
 }
 
-Map<String, int> Formateo(List<List<int>> listaValores) {
+Map<String, int> formateo(List<List<int>> listaValores) {
   Map<String, int> numeroBilletes = {
     "10k": 0,
     "20k": 0,
