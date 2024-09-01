@@ -294,7 +294,7 @@ class RetirarCreditCard extends HookConsumerWidget {
 }
 
 class _SkeletonCreditCard extends StatelessWidget {
-  const _SkeletonCreditCard({super.key});
+  const _SkeletonCreditCard();
 
   @override
   Widget build(BuildContext context) {

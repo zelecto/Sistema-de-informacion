@@ -31,13 +31,6 @@ class MontoSelecionarView extends HookConsumerWidget {
     final controllerValue = useTextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Seleccione el monto a retirar',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-      ),
       body: Container(
         padding: const EdgeInsets.all(20),
         height: double.infinity,
@@ -47,11 +40,21 @@ class MontoSelecionarView extends HookConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  height: ScreenSize.getHeight(context) * 0.05,
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    'Selecione el monto a retirar',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Image.asset(
+                  'assets/images/dinero.png',
+                  fit: BoxFit.cover,
+                  height: ScreenSize.getHeight(context) * 0.3,
+                  width: ScreenSize.getWidth(context),
                 ),
                 SizedBox(
-                  height: ScreenSize.getHeight(context) * 0.4,
+                  height: ScreenSize.getHeight(context) * 0.45,
                   child: GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
@@ -61,11 +64,25 @@ class MontoSelecionarView extends HookConsumerWidget {
                     children: listValores.map((value) {
                       return FloatingActionButton(
                         heroTag: value,
-                        onPressed: () {},
+                        onPressed: () {
+                          late Retiro retiro;
+                          if (creditCardEntity != null) {
+                            retiro = Retiro(
+                              montoRetirar: value,
+                              creditCard: creditCardEntity,
+                            );
+                            context.go('/codigo-CCV');
+                          } else {
+                            retiro = Retiro(montoRetirar: 1000);
+                          }
+                        },
+                        backgroundColor: Color(Colors.green.shade300.value),
                         child: Text(
                           numberFormat.format(value),
                           style: const TextStyle(
-                              color: Colors.black, fontSize: 18),
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
                         ),
                       );
                     }).toList(),
@@ -77,6 +94,7 @@ class MontoSelecionarView extends HookConsumerWidget {
                   height: ScreenSize.getHeight(context) * 0.1,
                   child: FloatingActionButton(
                     heroTag: 'Solicitar un valor diferente',
+                    backgroundColor: Color(Colors.green.shade300.value),
                     onPressed: () {
                       showDialog<String>(
                         context: context,
@@ -114,12 +132,12 @@ class MontoSelecionarView extends HookConsumerWidget {
                     child: const Text(
                       "Solicitar un valor diferente",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: ScreenSize.getHeight(context) * 0.1,
                 ),
               ],
             ),

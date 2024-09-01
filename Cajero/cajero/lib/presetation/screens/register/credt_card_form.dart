@@ -217,7 +217,7 @@ class CreditCardForm extends HookWidget {
                         if (value == null || value.isEmpty) {
                           return 'Este campo es obligatorio';
                         }
-                        if (value.length < 3) {
+                        if (controllerCcv.text.length < 3) {
                           return 'El CCV debe tener al menos 3 dígitos';
                         }
                         return null;
