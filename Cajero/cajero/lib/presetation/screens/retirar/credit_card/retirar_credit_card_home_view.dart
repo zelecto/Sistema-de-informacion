@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_card/credit_card.dart';
 import 'package:awesome_card/extra/card_type.dart';
 import 'package:awesome_card/style/card_background.dart';
@@ -25,170 +26,325 @@ class RetirarCreditCard extends HookConsumerWidget {
     var showBackSide = useState(false);
     var draggedCard = useState<CreditCardEntity?>(null);
     var enableButton = useState(false);
+    final PageController pageController = PageController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Bancolombia'),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: ScreenSize.getWidth(context),
-        height: ScreenSize.getHeight(context),
-        child: Column(
+        title: Row(
           children: [
-            const SizedBox(height: 10),
-            DragTarget<CreditCardEntity>(
-              onAccept: (data) {
-                draggedCard.value = data;
-                enableButton.value = true;
-              },
-              builder: (context, candidateData, rejectedData) {
-                return Container(
-                  width: ScreenSize.getWidth(context),
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue, width: 2),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[200],
-                  ),
-                  child: Center(
-                    child: draggedCard.value == null
-                        ? const Text('Arrastre la tarjeta hasta aquí',
-                            style: TextStyle(fontSize: 18))
-                        : CreditCard(
-                            cardNumber: draggedCard.value!.cardNumber,
-                            cardExpiry: draggedCard.value!.cardExpiry,
-                            cardHolderName: draggedCard.value!.cardHolderName,
-                            cvv: draggedCard.value!.cvv,
-                            bankName: 'Bancolombia',
-                            cardType: CardType.masterCard,
-                            showBackSide: showBackSide.value,
-                            frontBackground: CardBackgrounds.custom(
-                                draggedCard.value!.color.value),
-                            backBackground: CardBackgrounds.custom(
-                                draggedCard.value!.color.value),
-                            frontTextColor:
-                                ColorUtil.isColorLight(draggedCard.value!.color)
-                                    ? Colors.black
-                                    : Colors.white,
-                            textExpDate: 'Exp. Date',
-                            textExpiry: 'MM/YY',
-                          ),
-                  ),
-                );
-              },
+            const Spacer(),
+            Image.asset(
+              'assets/images/Icono_Bancolombia.png',
+              width: 40,
             ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: ScreenSize.getWidth(context),
-              height: ScreenSize.getHeight(context) * 0.4,
-              child: FutureBuilder<List<CreditCardEntity>>(
-                future: fetchCreditCards(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                        child: Text('Error al cargar tarjetas'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                        child: Text('No hay tarjetas disponibles'));
-                  } else {
-                    return PageView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final creditCard = snapshot.data![index];
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Draggable<CreditCardEntity>(
-                            data: creditCard,
-                            feedback: Opacity(
-                              opacity: 0.7,
-                              child: CreditCard(
-                                cardNumber: creditCard.cardNumber,
-                                cardExpiry: creditCard.cardExpiry,
-                                cardHolderName: creditCard.cardHolderName,
-                                cvv: creditCard.cvv,
-                                bankName: 'Bancolombia',
-                                cardType: CardType.masterCard,
-                                showBackSide: showBackSide.value,
-                                frontBackground: CardBackgrounds.custom(
-                                    creditCard.color.value),
-                                backBackground: CardBackgrounds.custom(
-                                    creditCard.color.value),
-                                frontTextColor:
-                                    ColorUtil.isColorLight(creditCard.color)
-                                        ? Colors.black
-                                        : Colors.white,
-                                textExpDate: 'Exp. Date',
-                                textExpiry: 'MM/YY',
-                              ),
-                            ),
-                            childWhenDragging: Opacity(
-                              opacity: 0.3,
-                              child: CreditCard(
-                                cardNumber: creditCard.cardNumber,
-                                cardExpiry: creditCard.cardExpiry,
-                                cardHolderName: creditCard.cardHolderName,
-                                cvv: creditCard.cvv,
-                                bankName: 'Bancolombia',
-                                cardType: CardType.masterCard,
-                                showBackSide: showBackSide.value,
-                                frontBackground: CardBackgrounds.custom(
-                                    creditCard.color.value),
-                                backBackground: CardBackgrounds.custom(
-                                    creditCard.color.value),
-                                frontTextColor:
-                                    ColorUtil.isColorLight(creditCard.color)
-                                        ? Colors.black
-                                        : Colors.white,
-                                textExpDate: 'Exp. Date',
-                                textExpiry: 'MM/YY',
-                              ),
-                            ),
-                            child: CreditCard(
-                              cardNumber: creditCard.cardNumber,
-                              cardExpiry: creditCard.cardExpiry,
-                              cardHolderName: creditCard.cardHolderName,
-                              cvv: creditCard.cvv,
-                              bankName: 'Bancolombia',
-                              cardType: CardType.masterCard,
-                              showBackSide: showBackSide.value,
-                              frontBackground: CardBackgrounds.custom(
-                                  creditCard.color.value),
-                              backBackground: CardBackgrounds.custom(
-                                  creditCard.color.value),
-                              frontTextColor:
-                                  ColorUtil.isColorLight(creditCard.color)
-                                      ? Colors.black
-                                      : Colors.white,
-                              textExpDate: 'Exp. Date',
-                              textExpiry: 'MM/YY',
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
+            const Text(
+              'Bancolombia',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: FilledButton(
-                onPressed: enableButton.value
-                    ? () {
-                        ref.read(creditCardProvider.notifier).state =
-                            draggedCard.value!;
-                        context.go('/monto_selecionar');
-                      }
-                    : null,
-                child: const Text("Continuar"),
-              ),
-            )
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          DragTarget<CreditCardEntity>(
+            // ignore: deprecated_member_use
+            onAccept: (data) {
+              draggedCard.value = data;
+              enableButton.value = true;
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Container(
+                  width: ScreenSize.getWidth(context),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                  ),
+                  child: draggedCard.value == null
+                      ? const Column(
+                          children: [
+                            Text(
+                              'Coloca tu tarjeta aquí arrastrándola',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 20),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: _SkeletonCreditCard(),
+                            ),
+                          ],
+                        )
+                      : FadeIn(
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              CreditCard(
+                                cardNumber: draggedCard.value!.cardNumber,
+                                cardExpiry: draggedCard.value!.cardExpiry,
+                                cardHolderName:
+                                    draggedCard.value!.cardHolderName,
+                                cvv: draggedCard.value!.cvv,
+                                bankName: 'Bancolombia',
+                                cardType: CardType.masterCard,
+                                showBackSide: showBackSide.value,
+                                frontBackground: CardBackgrounds.custom(
+                                    draggedCard.value!.color.value),
+                                backBackground: CardBackgrounds.custom(
+                                    draggedCard.value!.color.value),
+                                frontTextColor: ColorUtil.isColorLight(
+                                        draggedCard.value!.color)
+                                    ? Colors.black
+                                    : Colors.white,
+                                textExpDate: 'Exp. Date',
+                                textExpiry: 'MM/YY',
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      draggedCard.value = null;
+                                    },
+                                    icon: const Icon(Icons.delete_outline),
+                                    color: Color(Colors.red.value),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      showBackSide.value = !showBackSide.value;
+                                    },
+                                    icon: const Icon(Icons.replay_rounded),
+                                    color: Color(Colors.blue.value),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit),
+                                    color: Color(Colors.green.value),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              );
+            },
+          ),
+          const Spacer(),
+          SizedBox(
+            width: ScreenSize.getWidth(context),
+            height: ScreenSize.getHeight(context) * 0.25,
+            child: FutureBuilder<List<CreditCardEntity>>(
+              future: fetchCreditCards(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Error al cargar tarjetas'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text('No hay tarjetas disponibles'));
+                } else {
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PageView.builder(
+                          controller: pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final creditCard = snapshot.data![index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Draggable<CreditCardEntity>(
+                                data: creditCard,
+                                feedback: Opacity(
+                                  opacity: 0.7,
+                                  child: CreditCard(
+                                    cardNumber: creditCard.cardNumber,
+                                    cardExpiry: creditCard.cardExpiry,
+                                    cardHolderName: creditCard.cardHolderName,
+                                    cvv: creditCard.cvv,
+                                    bankName: 'Bancolombia',
+                                    cardType: CardType.masterCard,
+                                    showBackSide: false,
+                                    frontBackground: CardBackgrounds.custom(
+                                        creditCard.color.value),
+                                    backBackground: CardBackgrounds.custom(
+                                        creditCard.color.value),
+                                    frontTextColor:
+                                        ColorUtil.isColorLight(creditCard.color)
+                                            ? Colors.black
+                                            : Colors.white,
+                                    textExpDate: 'Exp. Date',
+                                    textExpiry: 'MM/YY',
+                                  ),
+                                ),
+                                childWhenDragging: Opacity(
+                                  opacity: 0.3,
+                                  child: CreditCard(
+                                    cardNumber: creditCard.cardNumber,
+                                    cardExpiry: creditCard.cardExpiry,
+                                    cardHolderName: creditCard.cardHolderName,
+                                    cvv: creditCard.cvv,
+                                    bankName: 'Bancolombia',
+                                    cardType: CardType.masterCard,
+                                    showBackSide: false,
+                                    frontBackground: CardBackgrounds.custom(
+                                        creditCard.color.value),
+                                    backBackground: CardBackgrounds.custom(
+                                        creditCard.color.value),
+                                    frontTextColor:
+                                        ColorUtil.isColorLight(creditCard.color)
+                                            ? Colors.black
+                                            : Colors.white,
+                                    textExpDate: 'Exp. Date',
+                                    textExpiry: 'MM/YY',
+                                  ),
+                                ),
+                                child: CreditCard(
+                                  height: ScreenSize.getHeight(context) * 0.3,
+                                  cardNumber: creditCard.cardNumber,
+                                  cardExpiry: creditCard.cardExpiry,
+                                  cardHolderName: creditCard.cardHolderName,
+                                  cvv: creditCard.cvv,
+                                  bankName: 'Bancolombia',
+                                  cardType: CardType.masterCard,
+                                  showBackSide: false,
+                                  frontBackground: CardBackgrounds.custom(
+                                      creditCard.color.value),
+                                  backBackground: CardBackgrounds.custom(
+                                      creditCard.color.value),
+                                  frontTextColor:
+                                      ColorUtil.isColorLight(creditCard.color)
+                                          ? Colors.black
+                                          : Colors.white,
+                                  textExpDate: 'Exp. Date',
+                                  textExpiry: 'MM/YY',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new),
+                          onPressed: () {
+                            if (pageController.hasClients) {
+                              pageController.previousPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios),
+                          onPressed: () {
+                            if (pageController.hasClients) {
+                              pageController.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            child: FilledButton(
+              onPressed: enableButton.value
+                  ? () {
+                      ref.read(creditCardProvider.notifier).state =
+                          draggedCard.value!;
+                      context.go('/monto_selecionar');
+                    }
+                  : null,
+              child: const Text("Continuar"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkeletonCreditCard extends StatelessWidget {
+  const _SkeletonCreditCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenSize.getHeight(context) * 0.23,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.grey[400], // Fondo sólido
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 25,
+
+            width: 150, // Ancho de la fecha de expiración
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+          ),
+          Container(
+            height: 25,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+          ),
+          Container(
+            height: 25,
+
+            width: 150, // Ancho de la fecha de expiración
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 200, // Ancho del nombre del titular
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

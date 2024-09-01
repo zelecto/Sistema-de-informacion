@@ -7,6 +7,7 @@ environment:
   sdk: ">=3.4.4 <4.0.0"
 
 dependencies:
+  animate_do: ^3.3.4
   awesome_card: ^1.1.7
   flutter:
     sdk: flutter
