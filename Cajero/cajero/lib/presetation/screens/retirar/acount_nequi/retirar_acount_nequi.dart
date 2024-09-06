@@ -2,6 +2,7 @@ import 'package:cajero/config/tools/screen_size.dart';
 import 'package:cajero/domain/entity/acunt_nequi.dart';
 import 'package:cajero/domain/infrastructure/acount_nequi_data.dart';
 import 'package:cajero/presetation/provider/acount_nequi/credit_cart_provaider.dart';
+import 'package:cajero/presetation/provider/credit_cart/credit_cart_provaider.dart';
 import 'package:cajero/presetation/screens/retirar/widget/show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,8 +30,6 @@ class RetirarAcountNequiView extends HookConsumerWidget {
         onInactivity: () {
           showDialogView(
               context, 'La sesión ha expirado debido a inactividad.');
-          // Opcional: Puedes redirigir al usuario a otra página aquí si lo deseas
-          context.go('/');
         },
       ),
       [],
@@ -145,6 +144,7 @@ class RetirarAcountNequiView extends HookConsumerWidget {
                               acountNequi;
                           // ignore: use_build_context_synchronously
                           context.go('/monto_selecionar');
+                          ref.read(creditCardProvider.notifier).state = null;
                         } else {
                           // ignore: use_build_context_synchronously
                           _showSnackBar(context, 'Cuenta no encontrada');

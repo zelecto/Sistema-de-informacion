@@ -30,6 +30,9 @@ class ReciboView extends ConsumerWidget {
               acountNumber: creditCardEntity != null
                   ? creditCardEntity.cardNumber
                   : acuntNequi!.tlf,
+              name: creditCardEntity != null
+                  ? creditCardEntity.cardHolderName
+                  : acuntNequi!.name,
               montoRetirar: retiro!.montoRetirar),
           FilledButton(
               onPressed: () => context.go('/'),
@@ -42,11 +45,13 @@ class ReciboView extends ConsumerWidget {
 
 class _CuentaInfoCard extends StatelessWidget {
   final String acountNumber;
+  final String name;
   final int montoRetirar;
 
   const _CuentaInfoCard({
     required this.acountNumber,
     required this.montoRetirar,
+    required this.name,
   });
 
   @override
@@ -68,7 +73,7 @@ class _CuentaInfoCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           width: ScreenSize.getWidth(context),
-          height: ScreenSize.getHeight(context) * 0.7,
+          height: ScreenSize.getHeight(context) * 0.8,
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -88,6 +93,14 @@ class _CuentaInfoCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
+                      'Titular de la cuenta: $name',
+                      style: textStyle,
+                    ),
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
                       'Número de cuenta: $acountNumber',
                       style: textStyle,
                     ),
@@ -102,7 +115,7 @@ class _CuentaInfoCard extends StatelessWidget {
                   ),
                   const Divider(),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
                       'Billetes',
                       style: textStyle.copyWith(fontWeight: FontWeight.bold),
@@ -115,7 +128,7 @@ class _CuentaInfoCard extends StatelessWidget {
                         return Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(bottom: 8.0),
                               child: Row(
                                 children: [
                                   Text(

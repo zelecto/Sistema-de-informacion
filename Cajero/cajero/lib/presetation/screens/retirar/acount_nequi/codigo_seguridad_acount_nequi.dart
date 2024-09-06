@@ -49,6 +49,7 @@ class _CodeTemporalAcountNequiState extends State<CodeTemporalAcountNequi> {
   void _generateNewRandomNumber() {
     final random = Random();
     _randomNumber.value = 100000 + random.nextInt(900000);
+    _time.value = 10;
   }
 
   void _startTimer() {

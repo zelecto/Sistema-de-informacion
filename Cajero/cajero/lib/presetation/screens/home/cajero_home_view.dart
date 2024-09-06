@@ -11,8 +11,9 @@ class CajeroHomeView extends StatelessWidget {
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
+        height: ScreenSize.getHeight(context),
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -22,32 +23,38 @@ class CajeroHomeView extends StatelessWidget {
                 height: ScreenSize.getHeight(context) * 0.2,
                 fit: BoxFit.cover,
               ),
-              const Text(
-                "Bienvenido(a)! Por favor, elige una de las siguientes opciones",
-                softWrap: true,
-                maxLines: null,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Text(
+                  "¡Bienvenido(a) a nuestro cajero automático!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: Colors.black87,
+                  ),
+                ),
               ),
               _CustomButton(
                 img: 'assets/images/logo_nequi.png',
                 onPressed: () {
                   context.push('/retiro_nequi');
                 },
-                textButton: 'retiros nequi',
+                textButton: 'Retirar de Nequi',
               ),
               _CustomButton(
                 onPressed: () {
                   context.push('/retirar_credit_card');
                 },
                 img: 'assets/images/credit_card.png',
-                textButton: 'retiros tarjeta',
+                textButton: 'Retirar con Tarjeta',
               ),
               _CustomButton(
                 onPressed: () {
                   context.push('/register');
                 },
                 img: 'assets/images/registrarse.jpeg',
-                textButton: 'registrarse',
+                textButton: 'Registrarse',
               ),
             ],
           ),
@@ -60,7 +67,8 @@ class CajeroHomeView extends StatelessWidget {
 class _CustomButton extends StatelessWidget {
   final String textButton;
   final String img;
-  final onPressed;
+  final void Function() onPressed;
+
   const _CustomButton({
     required this.textButton,
     required this.img,
@@ -70,31 +78,36 @@ class _CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: SizedBox(
-        width: ScreenSize.getHeight(context) * 0.2,
-        height: ScreenSize.getHeight(context) * 0.15,
+        width: ScreenSize.getHeight(context) * 0.3,
+        height: ScreenSize.getHeight(context) * 0.18,
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-              backgroundColor: Color(Colors.white.value),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)))),
+            backgroundColor: Colors.white, // Color de fondo del botón
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // Borde redondeado
+            ),
+            elevation: 5, // Elevación del botón
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 img,
-                width: ScreenSize.getWidth(context) * 0.25,
+                width: ScreenSize.getHeight(context) * 0.1,
                 fit: BoxFit.cover,
               ),
-              const SizedBox(
-                width: 5,
-              ),
+              const SizedBox(height: 8),
               Text(
                 textButton,
-                style: const TextStyle(fontSize: 20),
-              )
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
             ],
           ),
         ),
