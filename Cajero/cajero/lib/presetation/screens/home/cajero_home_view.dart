@@ -30,7 +30,9 @@ class CajeroHomeView extends StatelessWidget {
               ),
               _CustomButton(
                 img: 'assets/images/logo_nequi.png',
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/codigo_temporal');
+                },
                 textButton: 'retiros nequi',
               ),
               _CustomButton(

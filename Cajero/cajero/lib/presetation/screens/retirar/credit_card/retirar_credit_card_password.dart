@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_card/credit_card.dart';
 import 'package:cajero/config/tools/screen_size.dart';
 import 'package:cajero/presetation/provider/credit_cart/credit_cart_provaider.dart';
 import 'package:flutter/material.dart';
@@ -147,8 +146,7 @@ void _showDialog(BuildContext context, String message) {
         actions: [
           TextButton(
             onPressed: () {
-              //context.go('/');
-              Navigator.of(context).pop();
+              context.go('/');
             },
             child: const Text('OK'),
           ),

@@ -65,6 +65,7 @@ class MontoSelecionarView extends HookConsumerWidget {
                       return FloatingActionButton(
                         heroTag: value,
                         onPressed: () {
+                          // ignore: unused_local_variable
                           late Retiro retiro;
                           if (creditCardEntity != null) {
                             retiro = Retiro(

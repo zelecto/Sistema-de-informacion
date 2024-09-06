@@ -4,7 +4,7 @@ import 'package:cajero/domain/entity/credit_card.dart';
 class Retiro {
   final int montoRetirar;
   final CreditCardEntity? creditCard;
-  final AcuntNequi? acuntNequi;
+  final AcountNequi? acuntNequi;
 
   Retiro({required this.montoRetirar, this.creditCard, this.acuntNequi});
 }
