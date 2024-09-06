@@ -26,3 +26,8 @@ Future<void> addCreditCard(CreditCardEntity newCard) async {
   list.add(newCard);
   await saveCreditCardList(list);
 }
+
+Future<void> deleteAllCreditCards() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('creditCardList');
+}

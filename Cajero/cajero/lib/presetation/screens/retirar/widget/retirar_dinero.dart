@@ -68,34 +68,73 @@ class _CuentaInfoCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           width: ScreenSize.getWidth(context),
-          height: ScreenSize.getHeight(context) * 0.5,
+          height: ScreenSize.getHeight(context) * 0.7,
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    'Registro de operación \n Cajero automático',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      'Registro de operación\nCajero automático',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  Text(
-                    'Número de cuenta: $acountNumber',
-                    style: textStyle,
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      'Número de cuenta: $acountNumber',
+                      style: textStyle,
+                    ),
                   ),
-                  Text(
-                    'Monto retirado: $montoRetirar',
-                    style: textStyle,
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      'Monto retirado: $montoRetirar',
+                      style: textStyle,
+                    ),
                   ),
-                  Wrap(
-                    spacing: 8.0,
-                    alignment: WrapAlignment.center,
-                    children: billetesFormateado.entries.map((entry) {
-                      return Text(
-                        '${entry.key} : ${entry.value}',
-                        style: textStyle,
-                      );
-                    }).toList(),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      'Billetes',
+                      style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: billetesFormateado.entries.map((entry) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Billetes de ${entry.key}',
+                                    style: textStyle,
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${entry.value}',
+                                    style: textStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider()
+                          ],
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),

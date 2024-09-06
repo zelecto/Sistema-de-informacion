@@ -36,12 +36,15 @@ class TextFieldFrom extends StatelessWidget {
         inputFormatters: inputFormatters,
         validator: validator,
         focusNode: focusNode,
+        textAlignVertical: TextAlignVertical.top, // Esta es la línea añadida
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
           labelText: labelText,
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.grey),
           counterText: '',
+          errorMaxLines:
+              3, // Permite que el mensaje de error ocupe varias líneas
         ),
       ),
     );

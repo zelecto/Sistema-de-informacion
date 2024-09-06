@@ -2,11 +2,13 @@ import 'package:cajero/config/tools/screen_size.dart';
 import 'package:cajero/domain/entity/acunt_nequi.dart';
 import 'package:cajero/domain/infrastructure/acount_nequi_data.dart';
 import 'package:cajero/presetation/provider/acount_nequi/credit_cart_provaider.dart';
+import 'package:cajero/presetation/screens/retirar/widget/show_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../../domain/entity/inactivity_timer.dart'; // Asegúrate de importar la clase
 
 class RetirarAcountNequiView extends HookConsumerWidget {
   const RetirarAcountNequiView({super.key});
@@ -18,7 +20,22 @@ class RetirarAcountNequiView extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final isFormValid = useState(false);
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    // Función para validar el formulario
+
+    // Instancia del temporizador de inactividad
+    final inactivityTimer = useMemoized(
+      () => InactivityTimer(
+        duration: const Duration(
+            seconds: 10), // Ajusta el tiempo según tus necesidades
+        onInactivity: () {
+          showDialogView(
+              context, 'La sesión ha expirado debido a inactividad.');
+          // Opcional: Puedes redirigir al usuario a otra página aquí si lo deseas
+          context.go('/');
+        },
+      ),
+      [],
+    );
+
     void validateForm() {
       final formState = formKey.currentState;
       if (formState != null) {
@@ -33,11 +50,15 @@ class RetirarAcountNequiView extends HookConsumerWidget {
 
       controllerNoAcountNequi.addListener(() {
         validateForm();
+        inactivityTimer
+            .reset(); // Reinicia el temporizador cuando cambia el texto
       });
 
       return () {
         focusNode.dispose();
         controllerNoAcountNequi.dispose();
+        inactivityTimer
+            .dispose(); // Detén el temporizador cuando el widget se desmonte
       };
     }, []);
 

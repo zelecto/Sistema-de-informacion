@@ -47,20 +47,6 @@ class CreditCardForm extends HookWidget {
     // FocusNode para el CCV
     final focusNodeCcv = useFocusNode();
 
-    // Función para formatear el número de tarjeta
-    void formatCardNumber(String value) {
-      final rawText = value.replaceAll(RegExp(r'\s+'), '');
-      final limitedText =
-          rawText.length > 16 ? rawText.substring(0, 16) : rawText;
-      final formattedText = limitedText
-          .replaceAllMapped(RegExp(r'.{4}'), (match) => '${match.group(0)} ')
-          .trim();
-      controllerNumberCard.value = controllerNumberCard.value.copyWith(
-        text: formattedText,
-        selection: TextSelection.collapsed(offset: formattedText.length),
-      );
-    }
-
     // Función para formatear la fecha de vencimiento
     void formatExpirationDate(String value) {
       final rawText = value.replaceAll(RegExp(r'[^0-9]'), '');
@@ -73,6 +59,26 @@ class CreditCardForm extends HookWidget {
       );
     }
 
+    bool isValidExpirationDate(String value) {
+      final parts = value.split('/');
+      if (parts.length != 2) return false;
+
+      final month = int.tryParse(parts[0]);
+      final year = int.tryParse(parts[1]);
+
+      if (month == null || year == null) return false;
+      if (month < 1 || month > 12) return false;
+
+      final currentYear = DateTime.now().year % 100;
+      final currentMonth = DateTime.now().month;
+
+      if (year < currentYear || (year == currentYear && month < currentMonth)) {
+        return false;
+      }
+
+      return true;
+    }
+
     void validateForm() {
       final formState = formKey.currentState;
       if (formState != null) {
@@ -83,7 +89,6 @@ class CreditCardForm extends HookWidget {
     // Listener para todos los campos
     useEffect(() {
       void listener() {
-        formatCardNumber(controllerNumberCard.text);
         formatExpirationDate(controllerExpirationDate.text);
 
         numberCard.value = controllerNumberCard.text;
@@ -147,15 +152,15 @@ class CreditCardForm extends HookWidget {
                 controller: controllerNumberCard,
                 hintText: cardNumberHint,
                 labelText: 'Número de la tarjeta',
-                maxLength: 19,
+                maxLength: 11,
                 type: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Este campo es obligatorio';
                   }
-                  if (value.replaceAll(RegExp(r'\s+'), '').length != 16) {
-                    return 'El número de tarjeta debe tener 16 dígitos';
+                  if (controllerNumberCard.text.length != 11) {
+                    return 'El número de tarjeta debe tener 11 dígitos';
                   }
                   return null;
                 },
@@ -196,8 +201,8 @@ class CreditCardForm extends HookWidget {
                         if (value == null || value.isEmpty) {
                           return 'Este campo es obligatorio';
                         }
-                        if (value.length > 5) {
-                          return 'La fecha de vencimiento no puede tener más de 5 caracteres';
+                        if (!isValidExpirationDate(value)) {
+                          return 'Fecha de vencimiento inválida';
                         }
                         return null;
                       },
@@ -208,7 +213,7 @@ class CreditCardForm extends HookWidget {
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: TextFieldFrom(
                       controller: controllerCcv,
-                      maxLength: 3,
+                      maxLength: 4,
                       labelText: 'CCV',
                       hintText: ccvHint,
                       type: TextInputType.number,
@@ -217,12 +222,12 @@ class CreditCardForm extends HookWidget {
                         if (value == null || value.isEmpty) {
                           return 'Este campo es obligatorio';
                         }
-                        if (controllerCcv.text.length < 3) {
-                          return 'El CCV debe tener al menos 3 dígitos';
+                        if (value.length < 3 || value.length > 4) {
+                          return 'El CCV debe tener 3 o 4 dígitos';
                         }
                         return null;
                       },
-                      focusNode: focusNodeCcv, // Asignar el FocusNode aquí
+                      focusNode: focusNodeCcv,
                     ),
                   ),
                 ],
@@ -235,14 +240,14 @@ class CreditCardForm extends HookWidget {
                     onPressed: isFormValid.value
                         ? () {
                             if (formKey.currentState?.validate() ?? false) {
-                              var credit_card = CreditCardEntity(
+                              var creditCard = CreditCardEntity(
                                   cardNumber: controllerNumberCard.text,
                                   cardExpiry: controllerExpirationDate.text,
                                   cardHolderName: controllerHolderName.text,
                                   cvv: controllerCcv.text,
                                   color: selectedColor.value);
 
-                              addCreditCard(credit_card);
+                              addCreditCard(creditCard);
 
                               controllerNumberCard.clear();
                               controllerHolderName.clear();
