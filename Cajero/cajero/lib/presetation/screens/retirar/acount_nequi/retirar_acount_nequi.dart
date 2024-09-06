@@ -123,7 +123,7 @@ class RetirarAcountNequiView extends HookConsumerWidget {
                           ref.read(acountNequiProvaider.notifier).state =
                               acountNequi;
                           // ignore: use_build_context_synchronously
-                          context.go('/codigo_temporal');
+                          context.go('/monto_selecionar');
                         } else {
                           // ignore: use_build_context_synchronously
                           _showSnackBar(context, 'Cuenta no encontrada');

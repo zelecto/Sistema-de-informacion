@@ -45,7 +45,7 @@ class CodeTemporalAcountNequi extends HookWidget {
     void validarCodigoSeguridad() {
       if (controllerCodeSegurity.text.length == 6 &&
           randomNumber.value.toString() == controllerCodeSegurity.text) {
-        context.go('/monto_selecionar');
+        context.go('/recibo');
       } else if (controllerCodeSegurity.text.length == 6) {
         numIntentosDisponibles.value--;
         if (numIntentosDisponibles.value <= 0) {

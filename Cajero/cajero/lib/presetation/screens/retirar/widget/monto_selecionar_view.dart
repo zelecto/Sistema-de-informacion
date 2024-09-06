@@ -77,7 +77,9 @@ class MontoSelecionarView extends HookConsumerWidget {
                             );
                             context.go('/codigo-CCV');
                           } else {
-                            retiro = Retiro(montoRetirar: 1000);
+                            retiro = Retiro(
+                                montoRetirar: value, acuntNequi: acountNequi);
+                            context.go('/codigo_temporal');
                           }
                         },
                         backgroundColor: Color(Colors.green.shade300.value),
@@ -122,7 +124,13 @@ class MontoSelecionarView extends HookConsumerWidget {
                                   );
                                   context.go('/codigo-CCV');
                                 } else {
-                                  retiro = Retiro(montoRetirar: 1000);
+                                  retiro = Retiro(
+                                      montoRetirar: int.parse(
+                                        controllerValue.text
+                                            .replaceAll(RegExp(r'\D'), ''),
+                                      ),
+                                      acuntNequi: acountNequi);
+                                  context.go('/codigo_temporal');
                                 }
                                 ref.watch(retiroProvider.notifier).state =
                                     retiro;
