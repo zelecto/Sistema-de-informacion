@@ -1,7 +1,9 @@
 import 'package:cajero/config/tools/screen_size.dart';
+import 'package:cajero/domain/entity/acunt_nequi.dart';
 import 'package:cajero/domain/entity/credit_card.dart';
 import 'package:cajero/domain/entity/retiro.dart';
 import 'package:cajero/presetation/provider/Retiro/retiro_provider.dart';
+import 'package:cajero/presetation/provider/acount_nequi/credit_cart_provaider.dart';
 import 'package:cajero/presetation/provider/credit_cart/credit_cart_provaider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,7 @@ class MontoSelecionarView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CreditCardEntity? creditCardEntity = ref.watch(creditCardProvider);
+    final AcountNequi? acountNequi = ref.watch(acountNequiProvaider);
     final numberFormat = NumberFormat('#,##0.00', 'es_CO');
     const List<int> listValores = [
       10000,

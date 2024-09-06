@@ -1,6 +1,7 @@
 import 'package:cajero/presetation/screens/home/cajero_home_view.dart';
 import 'package:cajero/presetation/screens/register/register_view.dart';
 import 'package:cajero/presetation/screens/retirar/acount_nequi/prueba.dart';
+import 'package:cajero/presetation/screens/retirar/acount_nequi/retirar_acount_nequi.dart';
 import 'package:cajero/presetation/screens/retirar/credit_card/retirar_credit_card_home_view.dart';
 import 'package:cajero/presetation/screens/retirar/credit_card/retirar_credit_card_password.dart';
 import 'package:cajero/presetation/screens/retirar/widget/monto_selecionar_view.dart';
@@ -37,6 +38,11 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     path: '/codigo-CCV',
     name: RetirarCreditCardPassword.name,
     builder: (context, state) => const RetirarCreditCardPassword(),
+  ),
+  GoRoute(
+    path: '/retiro_nequi',
+    name: RetirarAcountNequiView.name,
+    builder: (context, state) => const RetirarAcountNequiView(),
   ),
   GoRoute(
     path: '/codigo_temporal',

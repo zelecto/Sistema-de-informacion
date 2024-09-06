@@ -16,7 +16,7 @@ class ReciboView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var retiro = ref.read(retiroProvider);
     CreditCardEntity? creditCardEntity = retiro?.creditCard;
-    AcuntNequi? acuntNequi = retiro?.acuntNequi;
+    AcountNequi? acuntNequi = retiro?.acuntNequi;
 
     return Scaffold(
         body: SizedBox(
